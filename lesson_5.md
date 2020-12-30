@@ -129,7 +129,7 @@ select
 
 Необходимо загрузить данные и очистить их.
 
-https://raw.githubusercontent.com/HaykInanc/mtsData/master/sql_for_oracle.sql
+(https://raw.githubusercontent.com/HaykInanc/mtsData/master/sql_for_oracle.sql)[https://github.com/blademoon/de_mipt/blob/master/sql_for_oracle.sql]
 
 Давайте загрузим данные и изучим их. Мы можем наблюдать следующие особенности
 
