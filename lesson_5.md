@@ -231,16 +231,23 @@ from dataSource;
 
 ```sql
 select  
-		case 
-        when instr(email, '@') <> 0 
-            then case  
-                when instr(email, ' ') = 0 
-                    then null 
-                else substr(email,instr(email, ' '+1)) 
-            end  
-        else email 
-    end as new_phone,
-    email
+    CASE
+        -- Если поле EMAIL содержит символ '@', то в нем есть адрес почты. 
+        WHEN instr(EMAIL,'@') <> 0
+            THEN CASE
+                --Если поле EMAIL не содержит пробел, то в нём нет номера телефона
+                WHEN instr(EMAIL,' ') = 0
+                    THEN NULL
+                --Иначе поле EMAIL содержит пробел и в нём есть номер телефона.
+                --Берем подстроку начиная с пробела + 1 символ и до конца строки.
+                --Это будет номер телефона.
+                ELSE substr(EMAIL,instr(EMAIL,' ')+1)
+            END
+        --Если поле EMAIL не содержит символ '@', то в этом поле содержится номер телефона
+        ELSE EMAIL
+    END as NEW_PHONE,
+    -- Выводим поле EMAIL для проверки результата.
+    EMAIL
 from dataSource;
 ```
 
