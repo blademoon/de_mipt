@@ -205,16 +205,17 @@ from dataSource;
 select  
 	case 
 	    --Если поле содержит знак "@" значит в нём есть адрес электронной почты.
-        when instr(email, '@') <> 0
+        when instr(EMAIL, '@') <> 0
             then case
                     --Если поле EMAIL не содержит пробелы, то в поле есть только EMAIL. Берем его. 
-                    when instr(email, ' ') = 0 
-                        then email 
+                    when instr(EMAIL, ' ') = 0 
+                        then EMAIL 
                     --Иначе поле содержит пробелы. Тогда вырезаем EMAIL, отбрасываем остатки.
-                    else substr(email, 0,  instr(email, ' ')) 
+                    else substr(EMAIL, 0,  instr(EMAIL, ' ')) 
             end  
-    end as new_email, 
-    email
+    end as NEW_EMAIL,
+    -- Выводим старое поле EMAIL для сравнения и проверки результата.
+    EMAIL
 from dataSource;
 ```
 
