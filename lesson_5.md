@@ -191,12 +191,15 @@ from dataSource
 
 ```sql
 select  
-		case 
-        when instr(email, '@') <> 0 
-            case  
-                when instr(email, ' ') = 0 
-                    then email 
-                else substr(email, 0,  instr(email, ' ')) 
+	case 
+	    --Если поле содержит знак "@" значит в нём есть адрес электронной почты.
+        when instr(email, '@') <> 0
+            then case
+                    --Если поле EMAIL не содержит пробелы, то в поле есть только EMAIL. Берем его. 
+                    when instr(email, ' ') = 0 
+                        then email 
+                    --Иначе поле содержит пробелы. Тогда вырезаем EMAIL, отбрасываем остатки.
+                    else substr(email, 0,  instr(email, ' ')) 
             end  
     end as new_email, 
     email
