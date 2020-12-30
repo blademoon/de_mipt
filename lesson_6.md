@@ -285,3 +285,6 @@ from (
 Необходимо загрузить данные и очистить их.
 
 https://raw.githubusercontent.com/HaykInanc/mtsData/master/sql_for_oracle.sql
+
+## Практическое задание 2
+
