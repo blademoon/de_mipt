@@ -156,27 +156,39 @@ from dataSource
 Следующим шагом давайте разобьем name и lastname.
 
 ```sql
-select  
-    case  
+select
+    --Приведем в порядок поле FIRST_NAME 
+    case 
+        --Если поле FIRST_NAME не содержит пробелов, то в нем все как надо.
         when instr(FIRST_NAME, ' ') = 0 
-            then FIRST_NAME 
+            then FIRST_NAME
+        --Если поле LAST_NAME содержит NULL, то в поле FIRST_NAME содержится имя и фамилия.
+        --Берем первую часть поля FIRST_NAME в качестве имени.
         when LAST_NAME is null  
-            then substr(FIRST_NAME, 1, instr(FIRST_NAME, ' ')-1) 
+            then substr(FIRST_NAME, 1, instr(FIRST_NAME, ' ')-1)
+        --Если поле FIRST_NAME содержит NULL, то берем первую часть поля LAST_NAME в качестве имени.
         when FIRST_NAME is null  
             then substr(LAST_NAME, 1, instr(LAST_NAME, ' ')-1) 
     end as new_FIRST_NAME, 
-     
-    case  
+    
+    -- Приведем в порядок поле LAST_NAME
+    case 
+        --Если поле LAST_NAME не содержит пробелов, то в нем все в порядке.
         when instr(LAST_NAME, ' ') = 0 
             then LAST_NAME 
+        --Если поле FIRST_NAME содержит NULL, то в поле LAST_NAME содержится имя и фамилия.
+        --Берем часть поля LAST_NAME начиная с позиции пробела + 1 символ и до конца строки в качестве фамилии.
         when FIRST_NAME is null  
-            then substr(LAST_NAME, instr(LAST_NAME, ' ')+1) 
+            then substr(LAST_NAME, instr(LAST_NAME, ' ')+1)
+        --Если поле LAST_NAME содержит NULL, то в поле FIRST_NAME содержится имя и фамилия.
+        --Берем часть поля FIRST_NAME начиная с позиции пробела + 1 символ и до конца строки в качестве фамилии.
         when LAST_NAME is null  
             then substr(FIRST_NAME, instr(FIRST_NAME, ' ')+1) 
     end as new_LAST_NAME, 
-    first_name, 
+    --Выведем старые поля FIRST_NAME и LAST_NAME для сравнения.
+    FIRST_NAME, 
     LAST_NAME
-from dataSource
+from dataSource;
 ```
 
 Тут можно видеть, что name и lastname обрабатываются подобным образом. Разберем пример FIRST_NAME.
