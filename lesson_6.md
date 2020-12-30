@@ -288,3 +288,106 @@ https://raw.githubusercontent.com/HaykInanc/mtsData/master/sql_for_oracle.sql
 
 ## Практическое задание 2
 
+Вводим данные 2 таблицы в livesql
+
+```sql
+create table dataSource2 (
+	first_name varchar(255),
+	last_name varchar(255),
+	email varchar(255),
+	gender varchar(255)
+);
+
+
+
+insert into dataSource2 (first_name, last_name, email, gender) values ('Rosita',                  'McGing',               'rmcging5@nps.gov 89235428443',                   'Female');                        
+insert into dataSource2 (first_name, last_name, email, gender) values ('Elinor',                  'Barca',                'ebarca54@gmail.com 89022338843',                  'Female');                        
+insert into dataSource2 (first_name, last_name, email, gender) values ('Paxon',                   'Rimington',            '89094235643',                   				  'Male');                        
+insert into dataSource2 (first_name, last_name, email, gender) values ('Truda',                   'Biffin',               'tbiffin81@wired.com 89096450730',                            'F');                 
+insert into dataSource2 (first_name, last_name, email, gender) values ('Noland',                  'Buesden',              '893265432 56',                                   'Male');                                    
+insert into dataSource2 (first_name, last_name, email, gender) values ('Brana Champion',           null,                  'CBrana@csmonitor.com',                      'Female');
+
+select * from dataSource2;
+```
+
+Приводим в порядок таблицу 2
+
+```sql
+create table new_dataSource2 as  
+select  
+    FIRST_NAME,	 
+    LAST_NAME,	 
+    EMAIL,	 
+    PHONE,
+    GENDER
+from ( 
+    SELECT
+        --Приводим в порядок поле FIRST_NAME
+        CASE
+            --Если поле FIRST_NAME содержит пробле, то в поле есть имя и фамилия.
+            WHEN instr(FIRST_NAME,' ') <> 0
+                THEN substr(FIRST_NAME,1,INSTR(FIRST_NAME,' ')-1)
+            --Иначе поле FIRST_NAME не содержит пробелов, следовательно заполнено верно     
+            ELSE FIRST_NAME
+        END as FIRST_NAME,
+        
+        --Приводим в порядок поле LAST_NAME
+        CASE
+            --Если поле LAST_NAME содержит NULL, то фамилия хранится во второй части FIRST_NAME  
+            WHEN LAST_NAME IS NULL
+                --Фамилия хранится в поле FIRST_NAME начиная от символа пробела +1 до конца строки 
+                THEN substr(FIRST_NAME,INSTR(FIRST_NAME,' ')+1)
+                --Иначе с фамилией все впорядке.
+                ELSE LAST_NAME
+        END as LAST_NAME,
+        
+        --Приводим в порядок поле EMAIL
+        CASE
+            --Если поле EMAIL содержит символ '@' то в нём есть почтовый адрес
+            WHEN (instr(EMAIL,'@') <> 0)
+                --Если поле EMAIL содержит пробел, то в этом поле есть и номер телефона.
+                THEN CASE
+                    WHEN (instr(EMAIL,' ') <> 0) 
+                    --Берем в качестве EMAIL часть от начала строки до пробела 
+                        THEN substr(EMAIL, 1, INSTR(EMAIL,' ')-1)
+                    --Иначе поле EMAIL корректно
+                    ELSE EMAIL
+                END
+                -- Иначе, поле EMAIL не содержит адреса почты, вставляем NULL
+                ELSE NULL
+        END AS EMAIL,
+    
+        --Создаём поле PHONE
+        CASE
+            --Если номер телефона указан в правильном формате (11 цифр) или 
+            WHEN regexp_like(EMAIL, '\d{11}')
+                THEN REGEXP_SUBSTR(EMAIL, '\d{11}' )
+            --Если номер телефона имеет пробел между цифрами
+            WHEN regexp_like(EMAIL, '\d+ \d+')
+                THEN REPLACE(REGEXP_SUBSTR('893265432 56','\d+ \d+' ),' ','')
+            --Иначе номера нет в поле EMAIL
+            ELSE NULL
+        END AS PHONE,
+        
+        --Приведем в порядок поле GENDER
+        CASE
+            --Если в начале строки есть символ 'F'
+            WHEN regexp_like(GENDER,'^F')
+                --То это женьшина
+                THEN 0
+            --Иначе это мужчина
+            ELSE 1
+        END as GENDER
+    FROM dataSource2  
+) t1;
+
+-- итоговый запрос
+select      
+    FIRST_NAME,	 
+    LAST_NAME,	 
+    EMAIL,	 
+    PHONE,
+    GENDER 
+from new_dataSource2
+```
+
