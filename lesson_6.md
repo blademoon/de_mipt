@@ -364,7 +364,7 @@ from (
                 THEN REGEXP_SUBSTR(EMAIL, '\d{11}' )
             --Если номер телефона имеет пробел между цифрами
             WHEN regexp_like(EMAIL, '\d+ \d+')
-                THEN REPLACE(REGEXP_SUBSTR('893265432 56','\d+ \d+' ),' ','')
+                THEN REPLACE(REGEXP_SUBSTR(EMAIL,'\d+ \d+' ),' ','')
             --Иначе номера нет в поле EMAIL
             ELSE NULL
         END AS PHONE,
